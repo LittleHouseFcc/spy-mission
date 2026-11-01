@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project 5 - Secret Agent (Turtle Demo)</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e9edf0; font-family: Arial, sans-serif; color: #17202b; }
+  .wrap { max-width: 910px; margin: 22px auto; padding: 0 14px 24px; }
+  .inputs { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; margin-bottom: 14px; }
+  label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; }
+  input { padding: 9px; border: 1px solid #9ba8b4; border-radius: 3px; font: 15px Arial; }
+  #message { width: 270px; max-width: 100%; }
+  #shift { width: 100px; }
+  button { padding: 10px 17px; background: #226d51; color: white; border: 0; border-radius: 3px; cursor: pointer; font-weight: bold; }
+  button:hover { background: #18553e; }
+  .window { border: 1px solid #8294a1; background: #071626; box-shadow: 0 3px 9px #0002; }
+  .titlebar { height: 30px; padding: 7px 12px; font: 13px Arial; color: #25343f; background: #f3f5f7; border-bottom: 1px solid #b2bcc5; }
+  svg { display: block; width: 100%; height: auto; }
+  .terminal { background: #16191c; color: #e5e5e5; font: 13px/1.6 Consolas, 'Courier New', monospace; padding: 9px 12px; margin-top: 10px; white-space: pre-wrap; }
+  .note { color: #55616b; font-size: 12px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="inputs">
+    <div><label for="message">Enter your secret message:</label><input id="message" value="HELLO AGENT" maxlength="300"></div>
+    <div><label for="shift">Shift (1–25):</label><input id="shift" type="number" min="1" max="25" step="1" value="3"></div>
+    <button id="run" type="button">Run Program</button>
+  </div>
+  <div class="window">
+    <div class="titlebar">Project 5 - Secret Agent — Python Turtle Output</div>
+    <!-- The coordinates, sizes, colors, and text below mirror draw_board() in the Python file. -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 550" role="img" aria-label="Turtle drawing of the Secret Agent message board">
+      <rect width="850" height="550" fill="#071626" />
+      <g fill="none" stroke-width="3">
+        <rect x="40" y="45" width="770" height="460" stroke="#39ff9b" />
+        <rect x="60" y="65" width="730" height="420" stroke="#247b72" />
+        <rect x="100" y="177" width="650" height="2" stroke="#39ff9b" />
+        <rect x="100" y="193" width="650" height="76" stroke="#39ff9b" />
+        <rect x="100" y="293" width="650" height="91" stroke="#39ff9b" />
+      </g>
+      <g font-family="Courier, 'Courier New', monospace" text-anchor="middle" font-weight="bold">
+        <text x="425" y="120" font-size="32" fill="#39ff9b">TOP SECRET</text>
+        <text x="425" y="156" font-size="13" fill="white">AGENT MESSAGE ENCRYPTION SYSTEM</text>
+        <text x="425" y="215" font-size="12" fill="#a6b8c8">ORIGINAL MESSAGE</text>
+        <text id="original" x="425" y="250" font-size="17" fill="white">HELLO AGENT</text>
+        <text x="425" y="318" font-size="12" fill="#a6b8c8">ENCRYPTED MESSAGE</text>
+        <text id="encrypted" x="425" y="359" font-size="20" fill="#39ff9b">KHOOR DJHQW</text>
+        <text id="status" x="425" y="428" font-size="12" fill="#ffda79">SHIFT: 3     |     STATUS: ENCRYPTED</text>
+        <text x="425" y="467" font-size="15" fill="#39ff9b">MISSION COMPLETE</text>
+      </g>
+    </svg>
+  </div>
+  <div id="console" class="terminal">=== SECRET AGENT: CAESAR CIPHER ===
+Enter your secret message: HELLO AGENT
+Enter a shift number (1-25): 3
+Encrypted message: KHOOR DJHQW</div>
+  <p class="note">This page reproduces the output of the Python Turtle project. The drawing is displayed in the browser; students will create it with Python Turtle in VS Code.</p>
+</div>
+<script>
+  function encrypt(message, shift) {
+    let secret = '';
+    for (const letter of message.toUpperCase()) {
+      if (letter >= 'A' && letter <= 'Z') {
+        const position = letter.charCodeAt(0) - 'A'.charCodeAt(0);
+        const newPosition = (position + shift) % 26;
+        secret += String.fromCharCode(newPosition + 'A'.charCodeAt(0));
+      } else {
+        secret += letter;
+      }
+    }
+    return secret;
+  }
+  function runProgram() {
+    const message = document.getElementById('message').value;
+    const shift = Number(document.getElementById('shift').value);
+    if (!Number.isInteger(shift) || shift < 1 || shift > 25) {
+      alert('Please enter a whole number from 1 to 25.');
+      document.getElementById('shift').focus();
+      return;
+    }
+    const secret = encrypt(message, shift);
+    document.getElementById('original').textContent = message.toUpperCase().slice(0, 34);
+    document.getElementById('encrypted').textContent = secret.slice(0, 34);
+    document.getElementById('status').textContent = 'SHIFT: ' + shift + '     |     STATUS: ENCRYPTED';
+    document.getElementById('console').textContent = '=== SECRET AGENT: CAESAR CIPHER ===\nEnter your secret message: ' + message + '\nEnter a shift number (1-25): ' + shift + '\nEncrypted message: ' + secret;
+  }
+  document.getElementById('run').addEventListener('click', runProgram);
+  document.getElementById('message').addEventListener('keydown', e => { if (e.key === 'Enter') runProgram(); });
+  document.getElementById('shift').addEventListener('keydown', e => { if (e.key === 'Enter') runProgram(); });
+</script>
+</body>
+</html>
